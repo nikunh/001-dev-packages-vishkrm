@@ -1,0 +1,6 @@
+{
+    "id": "001-dev-packages",
+    "version": "0.0.1",
+    "name": "Bootstrap Development Packages",
+    "description": "Installs essential development packages and dependencies (sudo, curl, etc.) that other features depend on. Runs first due to 001 prefix."
+}
