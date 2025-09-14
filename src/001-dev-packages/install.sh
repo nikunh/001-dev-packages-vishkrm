@@ -9,7 +9,7 @@ export DEBIAN_FRONTEND=noninteractive
 # Install system dependencies from the original Dockerfile
 apt-get update && \
     apt-get install -y --no-install-recommends \
-        sudo sshpass locales ca-certificates openssh-client gnupg curl wget file \
+        sudo sshpass locales ca-certificates openssh-client openssh-server gnupg curl wget file \
         jq build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev \
         python3 python3-venv python3-pip python3-dev \
         docker.io \
@@ -43,5 +43,33 @@ cp pip.conf /etc/pip/pip.conf
 
 # Create sudoers directory (required by user-setup and other features)
 mkdir -p /etc/sudoers.d
+
+# Configure SSHD for container use
+mkdir -p /var/run/sshd
+mkdir -p /etc/ssh/sshd_config.d
+
+# Create a basic SSHD configuration that works in containers
+# Use environment variables with sensible defaults
+SSH_PORT=${SSH_PORT:-2222}
+DEVPOD_USERNAME=${DEVPOD_USERNAME:-babaji}
+
+cat > /etc/ssh/sshd_config.d/devcontainer.conf << EOF
+# DevContainer SSHD Configuration
+Port $SSH_PORT
+ListenAddress 0.0.0.0
+PermitRootLogin no
+PasswordAuthentication yes
+PubkeyAuthentication yes
+AllowUsers $DEVPOD_USERNAME
+X11Forwarding yes
+PrintMotd no
+PrintLastLog no
+TCPKeepAlive yes
+ClientAliveInterval 120
+ClientAliveCountMax 3
+UsePAM yes
+# Required for running in container without systemd
+PidFile /var/run/sshd.pid
+EOF
 
 echo "Bootstrap Development Packages Feature installed successfully."
