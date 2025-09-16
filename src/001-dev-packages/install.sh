@@ -35,7 +35,8 @@ npm install -g npm@latest
 npm install -g playwright && npx playwright install-deps && playwright install
 
 # Install Python packages
-pip install --no-cache-dir pyts uv anaconda python-dotenv diagrams
+# Use python3 -m pip instead of pip to ensure proper PATH
+python3 -m pip install --no-cache-dir pyts uv anaconda python-dotenv diagrams
 
 # Create configuration directories and copy pip.conf
 mkdir -p /etc/pip
