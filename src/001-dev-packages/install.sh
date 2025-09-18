@@ -39,9 +39,9 @@ npm install -g playwright && npx playwright install-deps && playwright install
 echo "Skipping Python packages installation for now..."
 # python3 -m pip install --no-cache-dir pyts uv anaconda python-dotenv diagrams
 
-# Create configuration directories and copy pip.conf
-mkdir -p /etc/pip
-cp pip.conf /etc/pip/pip.conf
+# Create configuration directories and copy pip.conf (temporarily disabled)
+# mkdir -p /etc/pip
+# cp pip.conf /etc/pip/pip.conf
 
 # Create sudoers directory (required by user-setup and other features)
 mkdir -p /etc/sudoers.d
