@@ -35,7 +35,18 @@ npm install -g npm@latest
 npm install -g playwright && npx playwright install-deps && playwright install
 
 # Install Python packages
-# Use python3 -m pip instead of pip to ensure proper PATH
+# Check if Python and pip are available, install if missing
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "Python3 not found, installing..."
+    apt-get update && apt-get install -y python3 python3-pip python3-dev
+fi
+
+if ! python3 -m pip --version >/dev/null 2>&1; then
+    echo "Python3-pip not found, installing..."
+    apt-get update && apt-get install -y python3-pip
+fi
+
+echo "Installing Python packages..."
 python3 -m pip install --no-cache-dir pyts uv anaconda python-dotenv diagrams
 
 # Create configuration directories and copy pip.conf
