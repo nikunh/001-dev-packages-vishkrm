@@ -73,4 +73,137 @@ UsePAM yes
 PidFile /var/run/sshd.pid
 EOF
 
+# Install shellinator-enhance script for dynamic private feature loading
+echo "Installing shellinator-enhance script..."
+cat > /usr/local/bin/shellinator-enhance << 'ENHANCE_EOF'
+#!/bin/bash
+# Shellinator Enhance - Dynamic Private Feature Loader
+# This script loads private features after establishing secure tunnel connection
+
+set -e
+
+# Configuration
+PRIVATE_REGISTRY="${PRIVATE_REGISTRY:-registry.nikun.net}"
+GITEA_URL="${GITEA_URL:-https://gitea.nikun.net}"
+NEXUS_URL="${NEXUS_URL:-https://nexus.nikun.net}"
+ENHANCE_DIR="$HOME/.shellinator-enhance"
+LOG_FILE="$ENHANCE_DIR/enhance.log"
+STATE_FILE="$ENHANCE_DIR/state"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+log() {
+    echo -e "$1" | tee -a "$LOG_FILE" 2>/dev/null || echo -e "$1"
+}
+
+init_enhance() {
+    mkdir -p "$ENHANCE_DIR"
+    touch "$LOG_FILE"
+    [[ ! -f "$STATE_FILE" ]] && echo "not_enhanced" > "$STATE_FILE"
+}
+
+check_private_access() {
+    log "${BLUE}Checking private network access...${NC}"
+    if curl -s --max-time 5 "$GITEA_URL/api/v1/version" >/dev/null 2>&1 || \
+       curl -s --max-time 5 "https://$PRIVATE_REGISTRY/v2/" >/dev/null 2>&1; then
+        log "${GREEN}✓ Private network accessible${NC}"
+        return 0
+    else
+        log "${YELLOW}⚠ Private network not accessible${NC}"
+        return 1
+    fi
+}
+
+install_private_features() {
+    log "${BLUE}Installing private features...${NC}"
+
+    # Download and install personal aliases
+    local ALIASES_URL="$GITEA_URL/api/v1/repos/nikun/shellinator-private/raw/personal-aliases/.ohmyzsh_aliases_private.zshrc"
+    mkdir -p "$HOME/.ohmyzsh_source_load_scripts"
+
+    if curl -s --max-time 10 "$ALIASES_URL" -o "$HOME/.ohmyzsh_source_load_scripts/.personal_aliases.zshrc" 2>/dev/null; then
+        log "${GREEN}✓ Personal aliases installed${NC}"
+    fi
+
+    # Download and install NAS connector
+    local NAS_URL="$GITEA_URL/api/v1/repos/nikun/shellinator-private/raw/nas-connector/connect-nas.sh"
+    if curl -s --max-time 10 "$NAS_URL" -o "/tmp/connect-nas.sh" 2>/dev/null; then
+        if [[ -w "/usr/local/bin" ]]; then
+            mv /tmp/connect-nas.sh /usr/local/bin/connect-nas
+            chmod +x /usr/local/bin/connect-nas
+        else
+            sudo mv /tmp/connect-nas.sh /usr/local/bin/connect-nas
+            sudo chmod +x /usr/local/bin/connect-nas
+        fi
+        log "${GREEN}✓ NAS connector installed${NC}"
+    fi
+
+    echo "enhanced" > "$STATE_FILE"
+    log "${GREEN}✅ Private features installed successfully${NC}"
+
+    echo ""
+    echo "${GREEN}════════════════════════════════════════${NC}"
+    echo "${GREEN}✨ Shellinator Enhanced!${NC}"
+    echo "${GREEN}════════════════════════════════════════${NC}"
+    echo ""
+    echo "Private features now available:"
+    echo "  • Personal aliases and SSH configs"
+    echo "  • NAS connector (connect-nas)"
+    echo ""
+    echo "Run 'reload' or start a new shell to activate."
+    echo ""
+}
+
+check_enhanced_state() {
+    [[ -f "$STATE_FILE" ]] && grep -q "enhanced" "$STATE_FILE"
+}
+
+main() {
+    init_enhance
+
+    case "${1:-}" in
+        --check)
+            (
+                sleep 10
+                if ! check_enhanced_state && check_private_access; then
+                    install_private_features
+                fi
+            ) &
+            ;;
+        --force)
+            echo "not_enhanced" > "$STATE_FILE"
+            check_private_access && install_private_features || \
+                log "${RED}Cannot reach private infrastructure${NC}"
+            ;;
+        --status)
+            if check_enhanced_state; then
+                log "${GREEN}✓ Environment enhanced${NC}"
+            else
+                log "${YELLOW}⚠ Environment not enhanced${NC}"
+            fi
+            ;;
+        *)
+            if check_enhanced_state; then
+                log "${GREEN}✓ Already enhanced${NC}"
+            elif check_private_access; then
+                install_private_features
+            else
+                log "${YELLOW}Cannot reach private network${NC}"
+                log "Establish tunnel: cloudflared tunnel run --token YOUR_TOKEN"
+                log "Then run: shellinator-enhance"
+            fi
+            ;;
+    esac
+}
+
+main "$@"
+ENHANCE_EOF
+
+chmod +x /usr/local/bin/shellinator-enhance
+
 echo "Bootstrap Development Packages Feature installed successfully."
