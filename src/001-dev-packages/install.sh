@@ -34,10 +34,20 @@ npm install -g npm@latest
 # Install Playwright globally
 npm install -g playwright && npx playwright install-deps && playwright install
 
-# Install Python packages (temporarily disabled due to pip dependency issues)
-# TODO: Re-enable after fixing pip installation timing
-echo "Skipping Python packages installation for now..."
-# python3 -m pip install --no-cache-dir pyts uv anaconda python-dotenv diagrams
+# Install Python packages including pipx for aider dependency
+echo "Installing Python packages..."
+python3 -m pip install --no-cache-dir pipx pyts uv anaconda python-dotenv diagrams
+
+# Report installed packages to babaji-config fragment system
+echo "Reporting Python packages to babaji-config fragment system..."
+mkdir -p /usr/local/lib/babaji-config/fragments/packages
+cat << 'EOF' > /usr/local/lib/babaji-config/fragments/packages/python-packages.fragment
+# Python Packages Fragment - 001-dev-packages feature
+PYTHON_PACKAGES="pipx pyts uv anaconda python-dotenv diagrams"
+PYTHON_PACKAGES_STATUS="installed"
+PYTHON_PACKAGES_VERSION="$(python3 --version 2>&1)"
+PIPX_VERSION="$(pipx --version 2>&1 || echo 'not available')"
+EOF
 
 # Create configuration directories and copy pip.conf (temporarily disabled)
 # mkdir -p /etc/pip
