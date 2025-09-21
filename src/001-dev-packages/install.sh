@@ -18,6 +18,7 @@ apt-get update && \
         net-tools lastpass-cli direnv tzdata \
         graphviz \
         redis-tools \
+        zsh \
         && rm -rf /var/lib/apt/lists/*
 
 # Install yq from GitHub releases
