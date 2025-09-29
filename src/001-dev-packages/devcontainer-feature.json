@@ -1,0 +1,6 @@
+{
+  "id": "001-dev-packages",
+  "version": "0.0.1",
+  "name": "Bootstrap Development Packages",
+  "description": "Essential development packages with shellinator-enhance script for dynamic private feature loading. Runs first due to 001 prefix."
+}
