@@ -62,7 +62,9 @@ cd /tmp && \
     curl -L https://github.com/lastpass/lastpass-cli/releases/download/v1.6.1/lastpass-cli-1.6.1.tar.gz -o lastpass-cli.tar.gz && \
     tar xzf lastpass-cli.tar.gz && \
     cd lastpass-cli-1.6.1 && \
-    cmake . && \
+    mkdir -p build && \
+    cd build && \
+    cmake .. && \
     make && \
     make install && \
     cd /tmp && \
