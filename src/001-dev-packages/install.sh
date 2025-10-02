@@ -27,7 +27,7 @@ apt-get update && \
         docker.io \
         lua5.4 liblua5.4-dev \
         cifs-utils fontconfig unzip zip iputils-ping rsync inotify-tools trash-cli \
-        net-tools lastpass-cli direnv tzdata \
+        net-tools direnv tzdata \
         graphviz \
         redis-tools \
         zsh \
@@ -46,6 +46,29 @@ npm install -g npm@latest
 
 # Install Playwright globally
 npm install -g playwright && npx playwright install-deps && playwright install
+
+# Build and install LastPass CLI from source (v1.6.1)
+# The apt version is outdated and has SSL certificate issues
+echo "Building LastPass CLI from source..."
+apt-get update && apt-get install -y --no-install-recommends \
+    cmake \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    pinentry-curses \
+    xclip \
+    && rm -rf /var/lib/apt/lists/*
+
+cd /tmp && \
+    curl -L https://github.com/lastpass/lastpass-cli/releases/download/v1.6.1/lastpass-cli-1.6.1.tar.gz -o lastpass-cli.tar.gz && \
+    tar xzf lastpass-cli.tar.gz && \
+    cd lastpass-cli-1.6.1 && \
+    cmake . && \
+    make && \
+    make install && \
+    cd /tmp && \
+    rm -rf lastpass-cli-1.6.1 lastpass-cli.tar.gz
+
+echo "LastPass CLI v1.6.1 installed successfully"
 
 # Install Python packages including pipx for aider dependency
 echo "Installing Python packages..."
