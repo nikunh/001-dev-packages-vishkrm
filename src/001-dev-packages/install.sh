@@ -55,6 +55,7 @@ npm install -g playwright && npx playwright install-deps && playwright install
 echo "Building LastPass CLI from source..."
 apt-get update && apt-get install -y --no-install-recommends \
     cmake \
+    pkg-config \
     libcurl4-openssl-dev \
     libxml2-dev \
     pinentry-curses \
