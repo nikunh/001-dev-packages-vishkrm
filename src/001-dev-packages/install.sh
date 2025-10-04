@@ -13,6 +13,9 @@ log_debug "Script path: $0"
 log_debug "PWD: $(pwd)"
 log_debug "Environment: USER=$USER HOME=$HOME"
 
+# Redirect all output to log file while still showing on console
+exec > >(tee -a "$LOG_FILE") 2>&1
+
 echo "Installing Development Packages Feature..."
 
 # Set DEBIAN_FRONTEND to noninteractive to prevent prompts
