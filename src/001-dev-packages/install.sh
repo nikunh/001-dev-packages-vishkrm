@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 set -e
 
 # Logging mechanism for debugging
@@ -129,7 +129,7 @@ EOF
 # Install shellinator-enhance script for dynamic private feature loading
 echo "Installing shellinator-enhance script..."
 cat > /usr/local/bin/shellinator-enhance << 'ENHANCE_EOF'
-#!/bin/bash
+#!/usr/bin/env zsh
 # Shellinator Enhance - Dynamic Private Feature Loader
 # This script loads private features after establishing secure tunnel connection
 
