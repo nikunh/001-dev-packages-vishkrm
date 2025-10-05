@@ -1,5 +1,6 @@
-#!/bin/sh
-# NOTE: Must use sh (not zsh) since this script INSTALLS zsh (line 36)
+#!/bin/bash
+# NOTE: Must use bash (not zsh) since this script INSTALLS zsh
+# Uses bash (not sh) because we need process substitution for logging (line 18)
 set -e
 
 # Logging mechanism for debugging
