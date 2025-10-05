@@ -1,4 +1,5 @@
-#!/usr/bin/env zsh
+#!/bin/sh
+# NOTE: Must use sh (not zsh) since this script INSTALLS zsh (line 36)
 set -e
 
 # Logging mechanism for debugging
