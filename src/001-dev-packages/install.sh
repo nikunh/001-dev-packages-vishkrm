@@ -82,10 +82,10 @@ echo "LastPass CLI v1.6.1 installed successfully"
 echo "Installing Python packages..."
 python3 -m pip install --no-cache-dir pipx pyts uv anaconda python-dotenv diagrams
 
-# Report installed packages to babaji-config fragment system
-echo "Reporting Python packages to babaji-config fragment system..."
-mkdir -p /usr/local/lib/babaji-config/fragments/packages
-cat << 'EOF' > /usr/local/lib/babaji-config/fragments/packages/python-packages.fragment
+# Report installed packages to vishkrm-config fragment system
+echo "Reporting Python packages to vishkrm-config fragment system..."
+mkdir -p /usr/local/lib/vishkrm-config/fragments/packages
+cat << 'EOF' > /usr/local/lib/vishkrm-config/fragments/packages/python-packages.fragment
 # Python Packages Fragment - 001-dev-packages feature
 PYTHON_PACKAGES="pipx pyts uv anaconda python-dotenv diagrams"
 PYTHON_PACKAGES_STATUS="installed"
@@ -107,7 +107,7 @@ mkdir -p /etc/ssh/sshd_config.d
 # Create a basic SSHD configuration that works in containers
 # Use environment variables with sensible defaults
 SSH_PORT=${SSH_PORT:-2222}
-DEVPOD_USERNAME=${DEVPOD_USERNAME:-babaji}
+DEVPOD_USERNAME=${DEVPOD_USERNAME:-${_REMOTE_USER:-vishkrm}}
 
 cat > /etc/ssh/sshd_config.d/devcontainer.conf << EOF
 # DevContainer SSHD Configuration
