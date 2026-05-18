@@ -6,11 +6,12 @@ set -e
 # Logging mechanism for debugging
 LOG_FILE="/tmp/001-dev-packages-install.log"
 log_debug() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') [DEBUG] $*" >> "$LOG_FILE"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') [DEBUG] $*" >> "$LOG_FILE" 2>/dev/null || true
 }
 
 # Initialize logging
 log_debug "=== 001-DEV-PACKAGES INSTALL STARTED ==="
+chmod 0666 "$LOG_FILE" 2>/dev/null || true
 log_debug "Script path: $0"
 log_debug "PWD: $(pwd)"
 log_debug "Environment: USER=$USER HOME=$HOME"
