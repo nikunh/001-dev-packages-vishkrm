@@ -37,6 +37,7 @@ apt-get update && \
         graphviz \
         redis-tools \
         zsh \
+        cron \
         && rm -rf /var/lib/apt/lists/*
 
 # Install yq from GitHub releases
